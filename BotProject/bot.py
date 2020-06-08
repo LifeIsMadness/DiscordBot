@@ -1,8 +1,9 @@
 import random
 import asyncio
-from BotProject import utils
+import botutils
 from discord.ext import commands
 import logging
+import configparser
 
 # setup logging
 logger = logging.getLogger('__name__')
@@ -11,7 +12,14 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-TOKEN = 'NzE3NDcwNDM4NjA2NzY2MTIw.Xtaz1g.uiPCq9RYbhOfNzA3_KzukZa_Gec'
+# read config
+def read_config():
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    return config['discord'].get('token')
+
+
+TOKEN = read_config()
 bot = commands.Bot(command_prefix='!')
 
 
@@ -54,7 +62,7 @@ async def shutdown(ctx):
 
 @bot.command()
 async def flip(ctx):
-    members = utils.get_online_members(ctx.message.guild.members)
+    members = botutils.get_online_members(ctx.message.guild.members)
     lucky_one = random.randint(0, len(members) - 1)
 
     await ctx.send('Выбираю лалку...')
