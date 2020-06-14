@@ -17,10 +17,11 @@ handler.setFormatter(logging.Formatter(
     '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-# read config
-
 
 def read_config():
+    """
+    read config from file
+    """
     config = configparser.ConfigParser()
     config.read('config.ini')
     return config['discord'].get('token')
@@ -28,7 +29,6 @@ def read_config():
 
 TOKEN = read_config()
 news_parser = newsparser.IgromaniaNewsParser('key.txt')
-# bot = commands.Bot(command_prefix='!')
 
 
 class BotClient(commands.Bot):
@@ -68,7 +68,7 @@ class BotClient(commands.Bot):
         if member:
             await ctx.send('{} {}'.format(member.mention, ' '.join(args)))
         else:
-            await ctx.send(f'Данный pidor не найден')
+            await ctx.send(f'Данный пользователь не найден')
 
 
     @commands.command()
@@ -91,7 +91,7 @@ class BotClient(commands.Bot):
     async def news(ctx):
         is_owner = await bot.is_owner(ctx.message.author)
         if is_owner:
-            bot.loop.create_task(task_news(ctx))
+            bot.loop.create_task(BotClient.task_news(ctx))
         else:
             await ctx.send('Нет доступа.')
 
